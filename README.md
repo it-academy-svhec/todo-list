@@ -1,2 +1,3 @@
-# todo-list
-ITA TODO list app for simple app/DB deployments
+## Installation
+1. Run `pip install -r requirements.txt`
+
