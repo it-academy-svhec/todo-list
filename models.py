@@ -26,3 +26,16 @@ class Todo(db.Model):
     task = db.Column(db.String(255), nullable=False)
 
     user = db.relationship("User", backref="todos", lazy=True)
+
+
+# Helper functions for user management
+def get_user_by_username(username):
+    return User.query.filter_by(username=username).first()
+
+
+def create_user(username, password):
+    user = User(username=username)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    return user

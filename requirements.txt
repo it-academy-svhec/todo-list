@@ -4,4 +4,3 @@ flask-sqlalchemy
 flask-migrate
 python-dotenv
 werkzeug
-mysqlclient   # or mysql-connector-python
