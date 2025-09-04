@@ -54,30 +54,50 @@ def index():
     
     <h3>Step 2: Choose Your Database Setup Method</h3>
     
-    <h4>Option A: Manual SQL Table Creation (Recommended for Learning)</h4>
+    <h4>Option A: Manual MySQL Table Creation (Recommended for Learning)</h4>
     <p>This approach teaches you exactly what's happening in the database:</p>
-    <pre># Start SQLite and create the database
-sqlite3 todo_app.db
+    <pre># Install MySQL (if not already installed)
+# On Debian/Ubuntu:
+sudo apt update
+sudo apt install mysql-server mysql-client
 
-# Then manually create the tables (copy and paste these commands):
+# On Windows:
+# Download and install MySQL from: https://dev.mysql.com/downloads/installer/
+
+# Start MySQL service
+sudo systemctl start mysql
+sudo systemctl enable mysql
+
+# Secure MySQL installation
+sudo mysql_secure_installation
+
+# Connect to MySQL as root
+sudo mysql -u root -p
+
+# Create the database
+CREATE DATABASE todo_app;
+USE todo_app;
+
+# Create users table
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL
 );
 
+# Create todos table
 CREATE TABLE todos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     task VARCHAR(255) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 # Verify tables were created
-.tables
+SHOW TABLES;
 
-# Exit SQLite
-.quit</pre>
+# Exit MySQL
+EXIT;</pre>
     
     <h4>Option B: Using Flask Migrations (Production Approach)</h4>
     <p>This approach uses automated database migrations:</p>
@@ -153,9 +173,9 @@ if __name__ == "__main__":
     print("❌ Database setup required!")
     print("You have TWO OPTIONS:")
     print("")
-    print("Option A: Manual SQL Table Creation (Recommended for Learning)")
-    print("  sqlite3 todo_app.db")
-    print("  Then manually create tables with SQL commands")
+    print("Option A: Manual MySQL Table Creation (Recommended for Learning)")
+    print("  Install MySQL, create database 'todo_app', then create tables")
+    print("  See detailed instructions at http://127.0.0.1:5000")
     print("")
     print("Option B: Flask Migrations (Production Approach)")
     print("  python manage.py db init")
