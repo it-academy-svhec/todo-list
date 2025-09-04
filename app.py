@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret-key-change-in-production")
 
 # Database config - Students will create this database manually
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo_app.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:password@localhost/todo_app"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
