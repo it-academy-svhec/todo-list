@@ -9,6 +9,11 @@ from auth import auth_bp
 from todo import todo_bp
 
 load_dotenv()
+# Ensure MySQL driver is available for SQLAlchemy
+import pymysql
+pymysql.install_as_MySQLdb()
+
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret-key-change-in-production")
