@@ -5,12 +5,15 @@ from sqlalchemy.exc import OperationalError
 
 todo_bp = Blueprint("todo", __name__)
 
+# Template for the to-do list page
 todo_template = """
 <h2>Your To-Do List</h2>
-<form method="post" action="{{ url_for('todo.index') }}">
+
+<form method="post" action="{{ url_for('todo.add') }}">
   <input type="text" name="task" placeholder="New task" required>
   <button type="submit">Add</button>
 </form>
+
 <ul>
 {% for task in tasks %}
   <li>{{ task.task }}
@@ -18,9 +21,11 @@ todo_template = """
   </li>
 {% endfor %}
 </ul>
+
 <a href="{{ url_for('auth.logout') }}">Logout</a>
 """
 
+# Template for database errors
 database_error_template = """
 <div style="background-color: #ffe6e6; border: 2px solid #ff6666; padding: 20px; margin: 20px; border-radius: 5px;">
     <h2 style="color: #cc0000;">⚠️ Database Error</h2>
@@ -36,41 +41,41 @@ database_error_template = """
 </div>
 """
 
-
 @todo_bp.route("/todos")
 @login_required
 def index():
+    """Show all todos for the current user."""
     try:
         tasks = Todo.query.filter_by(user_id=current_user.id).all()
         return render_template_string(todo_template, tasks=tasks)
-    except OperationalError as e:
+    except OperationalError:
         return render_template_string(database_error_template, 
-                                   error_message="Database tables do not exist. Run the migration commands first.")
-
+                                      error_message="Database tables do not exist. Run the migration commands first.")
 
 @todo_bp.route("/add", methods=["POST"])
 @login_required
 def add():
+    """Add a new todo item."""
     try:
         task = request.form["task"]
         new_todo = Todo(task=task, user_id=current_user.id)
         db.session.add(new_todo)
         db.session.commit()
         return redirect(url_for("todo.index"))
-    except OperationalError as e:
+    except OperationalError:
         return render_template_string(database_error_template, 
-                                   error_message="Database tables do not exist. Run the migration commands first.")
-
+                                      error_message="Database tables do not exist. Run the migration commands first.")
 
 @todo_bp.route("/delete/<int:task_id>")
 @login_required
 def delete(task_id):
+    """Delete a todo item by ID."""
     try:
         todo = Todo.query.filter_by(id=task_id, user_id=current_user.id).first()
         if todo:
             db.session.delete(todo)
             db.session.commit()
         return redirect(url_for("todo.index"))
-    except OperationalError as e:
+    except OperationalError:
         return render_template_string(database_error_template, 
-                                   error_message="Database tables do not exist. Run the migration commands first.")
+                                      error_message="Database tables do not exist. Run the migration commands first.")
